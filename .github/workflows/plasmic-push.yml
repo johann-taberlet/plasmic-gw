@@ -27,17 +27,12 @@ jobs:
         with:
           key: lock-${{ hashFiles('package-lock.json', 'yarn.lock') }}
           path: node_modules
-      - id: build
-        name: Build Plasmic app
-        uses: plasmicapp/plasmic-action@master
+      - name: Build
+        run: npm run build # or yarn build
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.5
         with:
-          run: build
-          branch: main
-          skip_if_plasmic: true
-      - id: gh-pages
-        name: Publish to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@4.1.0
-        if: ${{ steps.build.outputs.publish_dir }}
-        with:
-          branch: gh-pages
-          folder: ${{ steps.build.outputs.publish_dir }}
+          branch: gh-pages # The branch the action should deploy to.
+          folder: out # The folder the action should deploy.
+          clean: true # Automatically remove deleted files from the deployment branch
